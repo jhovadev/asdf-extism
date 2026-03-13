@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+# bin/list-all
+
+set -euo pipefail
+
+GITHUB_URL="https://api.github.com/repos/extism/cli/releases"
+
+# Fetch versions from GitHub API
+# We use sed to extract the version from the tag_name field.
+# This is more portable than grep -P.
+curl -s ${GITHUB_TOKEN:+-H "Authorization: token $GITHUB_TOKEN"} "$GITHUB_URL" \
+  | grep '"tag_name":' \
+  | sed -E 's/.*"tag_name": *"v?([^"]+)".*/\1/' \
+  | sort -V

@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+# bin/install
+
+set -euo pipefail
+
+INSTALL_PATH=$ASDF_INSTALL_PATH
+DOWNLOAD_PATH=$ASDF_DOWNLOAD_PATH
+
+echo "Installing extism in $INSTALL_PATH..."
+
+# Create the bin folder where mise/asdf look for executables
+mkdir -p "$INSTALL_PATH/bin"
+
+# Copy the binary and give it execution permissions
+cp "$DOWNLOAD_PATH/extism" "$INSTALL_PATH/bin/extism"
+chmod +x "$INSTALL_PATH/bin/extism"
+
+echo "extism installed successfully!"

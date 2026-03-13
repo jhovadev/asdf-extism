@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+# bin/download
+
+set -euo pipefail
+
+VERSION=$ASDF_INSTALL_VERSION
+DOWNLOAD_PATH=$ASDF_DOWNLOAD_PATH
+
+# 1. Detectar el OS y la arquitectura
+OS="$(uname -s | tr '[:upper:]' '[:lower:]')"
+ARCH="$(uname -m)"
+
+case "$OS" in
+  darwin) ;;
+  linux) ;;
+  *) echo "Unsupported OS: $OS"; exit 1 ;;
+esac
+
+case "$ARCH" in
+  x86_64) ARCH="amd64" ;;
+  aarch64|arm64) ARCH="arm64" ;;
+  *) echo "Unsupported architecture: $ARCH"; exit 1 ;;
+esac
+
+# 2. Construir la URL exacta
+# The tag might have 'v' or not. In asdf, it's usually just the version number.
+# However, the GitHub release tags for extism/cli have 'v'.
+TAG="v$VERSION"
+URL="https://github.com/extism/cli/releases/download/$TAG/extism-$TAG-$OS-$ARCH.tar.gz"
+
+echo "Downloading extism version $TAG from $URL..."
+
+# 3. Descargar y extraer el binario
+mkdir -p "$DOWNLOAD_PATH"
+curl -fsSL "$URL" | tar -xz -C "$DOWNLOAD_PATH" extism
