@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 # bin/install
+set -euo pipefail
 
 INSTALL_PATH=$ASDF_INSTALL_PATH
 DOWNLOAD_PATH=$ASDF_DOWNLOAD_PATH

@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 # bin/download
+set -euo pipefail
 
 # A las versiones en GitHub normalmente se les pone una 'v' al inicio (ej: v1.1.0)
 VERSION="v${ASDF_INSTALL_VERSION}"
