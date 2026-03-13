@@ -1,35 +1,25 @@
 #!/usr/bin/env bash
 # bin/download
 
-set -euo pipefail
-
-VERSION=$ASDF_INSTALL_VERSION
+# A las versiones en GitHub normalmente se les pone una 'v' al inicio (ej: v1.1.0)
+VERSION="v${ASDF_INSTALL_VERSION}"
 DOWNLOAD_PATH=$ASDF_DOWNLOAD_PATH
 
-# 1. Detectar el OS y la arquitectura
+# 1. Detectar OS y Arquitectura
 OS="$(uname -s | tr '[:upper:]' '[:lower:]')"
 ARCH="$(uname -m)"
 
-case "$OS" in
-  darwin) ;;
-  linux) ;;
-  *) echo "Unsupported OS: $OS"; exit 1 ;;
-esac
+if [ "$ARCH" = "x86_64" ]; then ARCH="amd64"; fi
+if [ "$ARCH" = "aarch64" ] || [ "$ARCH" = "arm64" ]; then ARCH="arm64"; fi
 
-case "$ARCH" in
-  x86_64) ARCH="amd64" ;;
-  aarch64|arm64) ARCH="arm64" ;;
-  *) echo "Unsupported architecture: $ARCH"; exit 1 ;;
-esac
+# 2. Construir la URL basándonos en su script
+URL="https://github.com/extism/cli/releases/download/${VERSION}/extism-${VERSION}-${OS}-${ARCH}.tar.gz"
 
-# 2. Construir la URL exacta
-# The tag might have 'v' or not. In asdf, it's usually just the version number.
-# However, the GitHub release tags for extism/cli have 'v'.
-TAG="v$VERSION"
-URL="https://github.com/extism/cli/releases/download/$TAG/extism-$TAG-$OS-$ARCH.tar.gz"
+echo "Descargando extism versión ${ASDF_INSTALL_VERSION} desde $URL..."
 
-echo "Downloading extism version $TAG from $URL..."
-
-# 3. Descargar y extraer el binario
+# 3. Descargar y extraer
 mkdir -p "$DOWNLOAD_PATH"
-curl -fsSL "$URL" | tar -xz -C "$DOWNLOAD_PATH" extism
+curl -fsSL "$URL" -o "$DOWNLOAD_PATH/extism.tar.gz"
+
+# Extraemos el contenido del tar.gz en la carpeta temporal de descarga
+tar -xzf "$DOWNLOAD_PATH/extism.tar.gz" -C "$DOWNLOAD_PATH"
